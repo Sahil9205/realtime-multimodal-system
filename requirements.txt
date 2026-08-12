@@ -3,3 +3,5 @@ pydantic_settings
 
 numpy 
 sounddevice
+
+deepgram-sdk

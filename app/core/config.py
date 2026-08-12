@@ -26,8 +26,7 @@ class Settings(BaseSettings):
     # API Keys
     # ------------------------------------------------------------------
     DEEPGRAM_API_KEY: str = Field(default="")
-    ELEVENLABS_API_KEY: str = Field(default="")
-    OPENAI_API_KEY: str = Field(default="")
+    
 
     # ------------------------------------------------------------------
     # LLM
@@ -43,6 +42,7 @@ class Settings(BaseSettings):
     SAMPLE_RATE: int = 16000
     CHANNELS: int = 1
     CHUNK_SIZE: int = 1024
+    AUDIO_INPUT_DEVICE: int =2
 
     # ------------------------------------------------------------------
     # Timeouts (seconds)

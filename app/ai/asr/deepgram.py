@@ -141,6 +141,22 @@ class DeepgramASR(BaseASR):
             self._connection_context = None
             self._listener_task = None
 
+
+    async def finalize(self) -> None:
+        if self._connection is None:
+            raise ASRError(
+                "Deepgram connection is not established."
+            )
+
+        try:
+            await self._connection.send_finalize()
+            logger.debug("Sent Deepgram Finalize.")
+        except Exception as exc:
+            logger.exception("Failed to finalize Deepgram stream.")
+            raise ASRError(
+                "Failed to finalize Deepgram stream."
+            ) from exc
+
     async def send_audio(
         self,
         audio: bytes,

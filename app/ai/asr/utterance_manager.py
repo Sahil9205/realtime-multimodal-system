@@ -59,7 +59,7 @@ class UtteranceManager:
             self._confidence,
         )
 
-        if not result.speech_final:
+        if not result.is_final and not result.speech_final:
             return None
 
         utterance = UserUtterance(

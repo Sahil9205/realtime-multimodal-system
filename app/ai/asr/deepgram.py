@@ -62,7 +62,7 @@ class DeepgramASR(BaseASR):
                     interim_results=True,
                     smart_format=True,
                     punctuate=True,
-                    endpointing=300,
+                    endpointing=3000,
                     vad_events=True,
                 )
             )
@@ -215,6 +215,11 @@ class DeepgramASR(BaseASR):
             # ----------------------------------------------------------
             # Speech started
             # ----------------------------------------------------------
+            logger.info(
+                "DEEPGRAM EVENT: %s | %r",
+                type(message).__name__,
+                message,
+            )
 
             if isinstance(message, ListenV1SpeechStarted):
                 logger.debug(

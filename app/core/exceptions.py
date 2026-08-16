@@ -55,3 +55,5 @@ class ConfigurationError(VoiceAssistantError):
     """
     Raised when application configuration is invalid.
     """
+
+

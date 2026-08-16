@@ -5,7 +5,7 @@ Loads and validates all environment variables using Pydantic Settings.
 """
 
 from functools import lru_cache
-
+import os
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -26,14 +26,16 @@ class Settings(BaseSettings):
     # API Keys
     # ------------------------------------------------------------------
     DEEPGRAM_API_KEY: str = Field(default="")
-    
+    DEEPGRAM_TTS_API_KEY: str = os.getenv("DEEPGRAM_TTS_API_KEY")
+
+    TTS_PROVIDER: str = "deepgram"
 
     # ------------------------------------------------------------------
     # LLM
     # ------------------------------------------------------------------
-    LLM_PROVIDER: str = "openai"
-    LLM_MODEL: str = "gpt-4.1-mini"
-    TEMPERATURE: float = 0.7
+    LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "huggingface")
+    LLM_MODEL: str = ""
+    TEMPERATURE: float = 1
     MAX_TOKENS: int = 512
 
     # ------------------------------------------------------------------

@@ -13,6 +13,7 @@ from app.conversation.handlers.information import InformationRequestHandler
 from app.conversation.intent.classifier import IntentClassifier
 from app.conversation.intent.router import IntentRouter
 
+from app.conversation.memory import ConversationMemory
 from app.conversation.schemas.conversation_input import ConversationInput
 from app.conversation.schemas.conversation_output import ConversationOutput
 
@@ -57,6 +58,7 @@ class ConversationEngine:
         response_manager: ResponseManager | None = None,
         llm_manager: LLMManager | None = None,
         llm_service: LLMService | None = None,
+        memory: ConversationMemory | None = None,
     ) -> None:
 
         self._response_manager = (
@@ -93,6 +95,14 @@ class ConversationEngine:
             )
         )
 
+        self._memory = (
+            memory
+            if memory is not None
+            else ConversationMemory()
+        )
+
+        logger.info("ConversationEngine initialized with memory support.")
+
     async def process(
         self,
         utterance: UserUtterance,
@@ -103,6 +113,8 @@ class ConversationEngine:
         Flow:
             UserUtterance
                 ↓
+            ConversationMemory.add_user_message()
+                ↓
             ConversationInput
                 ↓
             IntentClassifier
@@ -111,12 +123,17 @@ class ConversationEngine:
                 ↓
             ConversationHandler
                 ↓
+            LLMService (with memory context)
+                ↓
             ResponseManager
                 ↓
-            ResponseBuilder
+            ConversationMemory.add_assistant_message()
                 ↓
             ConversationOutput
         """
+
+        # Store user message in memory
+        self._memory.add_user_message(utterance.text)
 
         conversation_input = ConversationInput(
             text=utterance.text,
@@ -142,15 +159,26 @@ class ConversationEngine:
             conversation_input,
         )
 
-    
+        # Get recent conversation context for LLM
+        memory_context = self._memory.get_context_string(num_messages=6)
+        
+        context_prompt = response.text
+        if memory_context:
+            context_prompt = (
+                f"Previous conversation context:\n{memory_context}\n\n"
+                f"New request: {response.text}"
+            )
 
         llm_response = await self._llm_service.generate(
-            response.text,
+            context_prompt,
         )
 
         final_response = self._response_manager.create(
             llm_response.content,
         )
+
+        # Store assistant message in memory
+        self._memory.add_assistant_message(final_response.text)
 
         logger.info(
             "Conversation response generated: %r",
@@ -158,3 +186,18 @@ class ConversationEngine:
         )
 
         return final_response
+
+    def get_memory(self) -> ConversationMemory:
+        """
+        Get the conversation memory instance.
+
+        Returns:
+            The ConversationMemory object.
+        """
+        return self._memory
+
+    def clear_memory(self) -> None:
+        """
+        Clear all conversation memory.
+        """
+        self._memory.clear()

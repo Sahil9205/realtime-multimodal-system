@@ -37,17 +37,18 @@ class VoiceResponseService:
         tts_service: TTSService | None = None,
         audio_output: BaseAudioOutput | None = None,
     ) -> None:
-        self._tts_service = (
-            tts_service
-            if tts_service is not None
-            else TTSService()
-        )
-
+        self._tts_service = tts_service
         self._audio_output = (
             audio_output
             if audio_output is not None
             else SystemAudioOutput()
         )
+
+    def _get_tts_service(self) -> TTSService:
+        """Create the default TTS service lazily."""
+        if self._tts_service is None:
+            self._tts_service = TTSService()
+        return self._tts_service
 
     async def respond(
         self,
@@ -67,7 +68,7 @@ class VoiceResponseService:
             text=response.text,
         )
 
-        tts_response = await self._tts_service.synthesize(
+        tts_response = await self._get_tts_service().synthesize(
             tts_request,
         )
 
@@ -76,3 +77,8 @@ class VoiceResponseService:
         )
 
         logger.info("Voice response playback completed.")
+
+    async def interrupt(self) -> None:
+        """Stop any currently playing response audio."""
+        await self._audio_output.interrupt()
+        logger.info("Voice response playback interrupted.")

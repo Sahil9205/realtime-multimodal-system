@@ -54,3 +54,8 @@ class SystemAudioOutput(BaseAudioOutput):
         sd.stop()
 
         logger.info("Audio playback completed.")
+
+    async def interrupt(self) -> None:
+        """Stop any active system audio playback."""
+        sd.stop()
+        logger.info("System audio playback interrupted.")

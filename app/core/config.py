@@ -34,7 +34,8 @@ class Settings(BaseSettings):
     # LLM
     # ------------------------------------------------------------------
     LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "huggingface")
-    LLM_MODEL: str = ""
+    LLM_MODEL_NAME: str = os.getenv("LLM_MODEL", "")
+    HF_TOKEN: str = os.getenv("HF_TOKEN", "")
     TEMPERATURE: float = 1
     MAX_TOKENS: int = 512
 

@@ -23,3 +23,10 @@ class BaseAudioOutput(ABC):
         Play generated TTS audio.
         """
         raise NotImplementedError
+
+    @abstractmethod
+    async def interrupt(self) -> None:
+        """
+        Stop active playback immediately.
+        """
+        raise NotImplementedError

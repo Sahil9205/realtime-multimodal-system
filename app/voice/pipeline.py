@@ -116,9 +116,11 @@ class VoicePipeline:
             utterance.text,
         )
 
-        conversation_output = self._conversation_engine.process(
-            utterance
-        )
+        result = self._conversation_engine.process(utterance)
+        if hasattr(result, "__await__"):
+            conversation_output = await result
+        else:
+            conversation_output = result
 
         logger.info(
             "Conversation engine produced response: %r",

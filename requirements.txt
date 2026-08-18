@@ -1,7 +1,20 @@
+#### This file is used to specify the dependencies for the project.
 pydantic
 pydantic_settings
 
 numpy 
 sounddevice
 
+sounddevice 
+pydub
+## tts and stt
 deepgram-sdk
+
+##huggingface inference
+huggingface_hub
+##orchestration frame work 
+pipecat-ai
+
+##FASTAPI
+fastapi
+uvicorn

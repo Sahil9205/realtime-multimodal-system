@@ -8,7 +8,10 @@ import asyncio
 
 from deepgram import AsyncDeepgramClient
 from deepgram.core.events import EventType
-from deepgram.listen.v1.types import (ListenV1Results,ListenV1SpeechStarted)
+from deepgram.listen.v1.types import (
+    ListenV1Results,
+    ListenV1SpeechStarted,
+)
 
 from app.ai.asr.base import BaseASR
 from app.ai.asr.schemas import TranscriptionResult
@@ -62,7 +65,7 @@ class DeepgramASR(BaseASR):
                     interim_results=True,
                     smart_format=True,
                     punctuate=True,
-                    endpointing=3000,
+                    endpointing=settings.DEEPGRAM_ENDPOINTING,
                     vad_events=True,
                 )
             )
@@ -76,6 +79,10 @@ class DeepgramASR(BaseASR):
             self._listener_task = asyncio.create_task(
                 self._connection.start_listening()
             )
+
+            # Let the listener task enter its receive loop before the
+            # first microphone chunk is sent by the processor.
+            await asyncio.sleep(0)
 
             logger.info(
                 "Deepgram listener started."
@@ -215,7 +222,7 @@ class DeepgramASR(BaseASR):
             # ----------------------------------------------------------
             # Speech started
             # ----------------------------------------------------------
-            logger.info(
+            logger.debug(
                 "DEEPGRAM EVENT: %s | %r",
                 type(message).__name__,
                 message,

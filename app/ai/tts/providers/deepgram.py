@@ -3,6 +3,7 @@ Deepgram Text-to-Speech provider.
 """
 
 from __future__ import annotations
+import asyncio
 
 from deepgram import DeepgramClient
 
@@ -45,12 +46,20 @@ class DeepgramTTS(BaseTTS):
 
         model = request.model or "aura-2-thalia-en"
 
-        response = self._client.speak.v1.audio.generate(
+        # Deepgram's SDK call is synchronous. Keeping it off the event loop
+        # lets an interrupt reach the WebSocket manager immediately.
+        response = await asyncio.to_thread(
+            self._client.speak.v1.audio.generate,
             text=request.text,
             model=model,
         )
 
-        audio = b"".join(response)
+        if isinstance(response, (bytes, bytearray)):
+            audio = bytes(response)
+        elif hasattr(response, "stream"):
+            audio = response.stream.getvalue()
+        else:
+            audio = b"".join(response)
 
         if not audio:
             raise RuntimeError(

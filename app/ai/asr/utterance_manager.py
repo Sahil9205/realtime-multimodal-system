@@ -59,7 +59,10 @@ class UtteranceManager:
             self._confidence,
         )
 
-        if not result.is_final and not result.speech_final:
+        # ``is_final`` only finalizes a speech segment. Wait for Deepgram's
+        # endpoint detector to mark the complete speech turn; otherwise the
+        # assistant responds to partial phrases.
+        if not result.speech_final:
             return None
 
         utterance = UserUtterance(

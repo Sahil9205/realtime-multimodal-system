@@ -21,6 +21,21 @@ def test_interim_results_do_not_emit_utterance() -> None:
     assert result is None
 
 
+def test_final_segment_without_speech_end_does_not_emit_utterance() -> None:
+    manager = UtteranceManager()
+
+    result = manager.process(
+        TranscriptionResult(
+            transcript="Hello Alisha",
+            is_final=True,
+            speech_final=False,
+            confidence=0.90,
+        )
+    )
+
+    assert result is None
+
+
 def test_speech_final_emits_user_utterance() -> None:
     manager = UtteranceManager()
 

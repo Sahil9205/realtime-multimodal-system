@@ -3,6 +3,8 @@ Hugging Face LLM provider.
 """
 
 from __future__ import annotations
+import asyncio
+
 from huggingface_hub import InferenceClient
 from app.ai.llm.base import BaseLLM
 from app.ai.llm.schemas import LLMRequest, LLMResponse
@@ -54,7 +56,10 @@ class HuggingFaceLLM(BaseLLM):
         ]
 
         try:
-            response = self._client.chat.completions.create(
+            # The SDK method is synchronous. Run it outside the event loop so
+            # a user interruption can cancel the awaiting voice turn.
+            response = await asyncio.to_thread(
+                self._client.chat.completions.create,
                 model=model_name,
                 messages=messages,
                 temperature=request.temperature,
@@ -98,8 +103,13 @@ class HuggingFaceLLM(BaseLLM):
                 exc,
             )
 
-            user_content = request.messages[-1].content
-            fallback_content = f"LLM response to: {user_content}"
+            # Never expose the internal prompt or conversation history to the
+            # user. It is intended only for the model and may be spoken by
+            # TTS when a provider is unavailable.
+            fallback_content = (
+                "I'm sorry, I can't reach the language model right now. "
+                "Please try again in a moment."
+            )
 
             return LLMResponse(
                 content=fallback_content,

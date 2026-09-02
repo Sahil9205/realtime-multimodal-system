@@ -45,12 +45,13 @@ class Settings(BaseSettings):
     SAMPLE_RATE: int = 16000
     CHANNELS: int = 1
     CHUNK_SIZE: int = 1024
-    AUDIO_INPUT_DEVICE: int =2
+    AUDIO_INPUT_DEVICE: int = 2
 
     # ------------------------------------------------------------------
     # Timeouts (seconds)
     # ------------------------------------------------------------------
     ASR_TIMEOUT: int = 10
+    DEEPGRAM_ENDPOINTING: int = 1000
     LLM_TIMEOUT: int = 30
     TTS_TIMEOUT: int = 15
 

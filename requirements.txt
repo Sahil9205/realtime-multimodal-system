@@ -2,19 +2,22 @@
 pydantic
 pydantic_settings
 
+## audio 
 numpy 
 sounddevice
-
-sounddevice 
 pydub
 ## tts and stt
 deepgram-sdk
 
 ##huggingface inference
 huggingface_hub
-##orchestration frame work 
-pipecat-ai
 
-##FASTAPI
+##orchestration frame work 
+pipecat-ai[webrtc]
+
+##api
 fastapi
 uvicorn
+
+## testing
+pytest

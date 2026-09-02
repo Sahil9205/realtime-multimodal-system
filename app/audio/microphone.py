@@ -23,8 +23,8 @@ class Microphone:
     """
 
     def __init__(self) -> None:
-        self.sample_rate = 16000
-        self.channels = 1
+        self.sample_rate = settings.SAMPLE_RATE
+        self.channels = settings.CHANNELS
         self.chunk_size = settings.CHUNK_SIZE
         self.device = settings.AUDIO_INPUT_DEVICE
 

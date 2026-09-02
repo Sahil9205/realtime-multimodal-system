@@ -11,9 +11,8 @@ from __future__ import annotations
 
 import asyncio
 
-import sounddevice as sd
-
 from app.ai.asr.deepgram import DeepgramASR
+from app.audio.microphone import Microphone
 from app.core.config import settings
 
 
@@ -22,25 +21,31 @@ CHANNELS = settings.CHANNELS
 DURATION_SECONDS = 5
 
 
-def record_audio() -> bytes:
+async def stream_microphone(asr: DeepgramASR) -> None:
     print()
     print("=" * 60)
     print("Speak now...")
     print("Say: Hello Alisha")
     print("=" * 60)
 
-    audio = sd.rec(
-        int(DURATION_SECONDS * SAMPLE_RATE),
-        samplerate=SAMPLE_RATE,
-        channels=CHANNELS,
-        dtype="int16",
-    )
+    microphone = Microphone()
+    microphone.start()
+    loop = asyncio.get_running_loop()
 
-    sd.wait()
+    try:
+        deadline = loop.time() + DURATION_SECONDS
 
-    print("Recording finished.")
+        while loop.time() < deadline:
+            audio_chunk = await asyncio.to_thread(
+                microphone.read,
+            )
 
-    return audio.tobytes()
+            if audio_chunk.data:
+                await asr.send_audio(audio_chunk.data)
+    finally:
+        microphone.close()
+
+    print("Recording and streaming finished.")
 
 
 async def run_real_deepgram_test() -> None:
@@ -51,11 +56,9 @@ async def run_real_deepgram_test() -> None:
         await asr.connect()
         print("Connected.")
 
-        audio = await asyncio.to_thread(record_audio)
-
-        print("Sending audio to Deepgram...")
-        await asr.send_audio(audio)
-        print("Audio sent.")
+        print("Streaming audio to Deepgram...")
+        await stream_microphone(asr)
+        print("Audio stream sent.")
         await asr.finalize()
 
         print("Waiting for transcript...")

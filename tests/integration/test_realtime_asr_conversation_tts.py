@@ -182,65 +182,67 @@ async def test_realtime_asr_conversation_tts() -> None:
         print("  What can you do?")
         print("=" * 60)
 
-        audio = sd.rec(
-            int(
-                RECORD_SECONDS * SAMPLE_RATE
-            ),
-            samplerate=SAMPLE_RATE,
-            channels=CHANNELS,
-            dtype="int16",
-        )
+        # Capture and forward chunks at the same time. Recording the
+        # complete clip first leaves Deepgram idle and triggers its
+        # no-audio WebSocket timeout.
+        audio_queue: asyncio.Queue[bytes] = asyncio.Queue()
+        loop = asyncio.get_running_loop()
 
-        sd.wait()
+        def on_audio(indata, frames, time_info, status) -> None:
+            if status:
+                print(f"Microphone status: {status}")
 
-        audio_bytes = audio.tobytes()
-
-        print()
-        print("Recording finished.")
-        print(
-            f"Captured {len(audio_bytes)} bytes."
-        )
-
-        # ==========================================================
-        # 4. Stream audio through ASR
-        # ==========================================================
+            loop.call_soon_threadsafe(
+                audio_queue.put_nowait,
+                indata.copy().tobytes(),
+            )
 
         print()
         print(
-            "Streaming audio through "
+            "Streaming microphone audio through "
             "ASRProcessor..."
         )
 
-        for start in range(
-            0,
-            len(audio_bytes),
-            CHUNK_SIZE,
-        ):
-
-            chunk = audio_bytes[
-                start:start + CHUNK_SIZE
-            ]
-
-            if not chunk:
-                continue
-
-            await asr_processor.process_frame(
-                InputAudioRawFrame(
-                    audio=chunk,
-                    sample_rate=SAMPLE_RATE,
-                    num_channels=CHANNELS,
-                ),
-                FrameDirection.DOWNSTREAM,
-            )
-
-            # Simulate real-time microphone timing.
-            await asyncio.sleep(
-                CHUNK_DURATION_SECONDS
-            )
-
-        print(
-            "Finished streaming audio."
+        stream = sd.InputStream(
+            samplerate=SAMPLE_RATE,
+            channels=CHANNELS,
+            dtype="int16",
+            blocksize=CHUNK_SIZE,
+            callback=on_audio,
         )
+
+        stream.start()
+
+        try:
+            deadline = (
+                loop.time()
+                + RECORD_SECONDS
+            )
+
+            while loop.time() < deadline:
+                remaining = deadline - loop.time()
+
+                try:
+                    chunk = await asyncio.wait_for(
+                        audio_queue.get(),
+                        timeout=remaining,
+                    )
+                except asyncio.TimeoutError:
+                    break
+
+                await asr_processor.process_frame(
+                    InputAudioRawFrame(
+                        audio=chunk,
+                        sample_rate=SAMPLE_RATE,
+                        num_channels=CHANNELS,
+                    ),
+                    FrameDirection.DOWNSTREAM,
+                )
+        finally:
+            stream.stop()
+            stream.close()
+
+        print("Finished streaming audio.")
 
         # ==========================================================
         # 5. Finalize Deepgram

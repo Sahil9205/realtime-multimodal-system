@@ -12,7 +12,7 @@ def test_greeting_handler_returns_response() -> None:
     handler = GreetingHandler()
 
     result = handler.handle(
-        ConversationInput(text="Hello Alisha", confidence=0.95)
+        ConversationInput(text="Hello Assistant", confidence=0.95)
     )
 
     assert result.text == "Hello! How can I help you?"

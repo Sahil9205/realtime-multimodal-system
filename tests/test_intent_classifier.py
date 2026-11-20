@@ -9,7 +9,7 @@ from app.conversation.schemas.intent import Intent
 def test_greeting_is_classified_correctly() -> None:
     classifier = IntentClassifier()
 
-    intent = classifier.classify("Hello Alisha")
+    intent = classifier.classify("Hello")
 
     assert intent == Intent.GREETING
 

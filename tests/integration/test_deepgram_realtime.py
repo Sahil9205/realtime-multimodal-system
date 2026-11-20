@@ -25,7 +25,7 @@ async def stream_microphone(asr: DeepgramASR) -> None:
     print()
     print("=" * 60)
     print("Speak now...")
-    print("Say: Hello Alisha")
+    print("Say: Hello Assistant")
     print("=" * 60)
 
     microphone = Microphone()

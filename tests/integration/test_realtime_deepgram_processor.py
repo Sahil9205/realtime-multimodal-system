@@ -117,7 +117,7 @@ async def test_realtime_deepgram_processor() -> None:
         print(f"Speak naturally for {RECORD_SECONDS} seconds.")
         print()
         print("Try saying:")
-        print("  Hello Alisha.")
+        print("  Hello Assistant.")
         print("  How are you?")
         print("  What can you do?")
         print()

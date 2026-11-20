@@ -35,7 +35,7 @@ class FakeASR(BaseASR):
 
         await self._transcript_queue.put(
             TranscriptionResult(
-                transcript="hello alisha",
+                transcript="hello assistant",
                 is_final=True,
                 speech_final=True,
                 confidence=0.95,
@@ -104,7 +104,7 @@ async def test_asr_processor_emits_transcription_frame() -> None:
     for _ in range(100):
         if any(
             isinstance(frame, TranscriptionFrame)
-            and frame.text == "hello alisha"
+            and frame.text == "hello assistant"
             and frame.finalized is True
             for frame in emitted
         ):
@@ -116,7 +116,7 @@ async def test_asr_processor_emits_transcription_frame() -> None:
 
     assert any(
         isinstance(frame, TranscriptionFrame)
-        and frame.text == "hello alisha"
+        and frame.text == "hello assistant"
         and frame.finalized is True
         for frame in emitted
     )

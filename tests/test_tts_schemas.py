@@ -3,10 +3,10 @@ from app.ai.tts.schemas import TTSRequest, TTSResponse
 
 def test_tts_request_creates_successfully() -> None:
     request = TTSRequest(
-        text="Hello Alisha",
+        text="Hello Assistant",
     )
 
-    assert request.text == "Hello Alisha"
+    assert request.text == "Hello Assistant"
     assert request.language == "en"
 
 

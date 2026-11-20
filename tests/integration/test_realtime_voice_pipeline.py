@@ -171,7 +171,7 @@ async def test_realtime_voice_pipeline() -> None:
         )
         print()
         print("Try saying:")
-        print("  Hello Alisha.")
+        print("  Hello Assistant.")
         print("  How are you?")
         print("=" * 60)
 
@@ -338,7 +338,7 @@ async def test_realtime_voice_pipeline() -> None:
 
         for frame in response_frames:
             print(
-                f"ALISHA: {frame.text!r}"
+                f"ASSISTANT: {frame.text!r}"
             )
 
         print()

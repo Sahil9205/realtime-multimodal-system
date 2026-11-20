@@ -177,7 +177,7 @@ async def test_realtime_asr_conversation_tts() -> None:
         )
         print()
         print("Try saying:")
-        print("  Hello Alisha.")
+        print("  Hello Assistant.")
         print("  How are you?")
         print("  What can you do?")
         print("=" * 60)
@@ -358,7 +358,7 @@ async def test_realtime_asr_conversation_tts() -> None:
 
         for frame in responses:
             print(
-                f"ALISHA TEXT: {frame.text!r}"
+                f"ASSISTANT TEXT: {frame.text!r}"
             )
 
         for frame in audio_frames:

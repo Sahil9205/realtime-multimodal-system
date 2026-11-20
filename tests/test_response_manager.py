@@ -9,19 +9,19 @@ from app.conversation.response.manager import ResponseManager
 def test_response_manager_returns_response() -> None:
     manager = ResponseManager()
 
-    response = manager.create("Hello Alisha")
+    response = manager.create("Hello Assistant")
 
     assert response is not None
-    assert response.text == "Hello Alisha"
+    assert response.text == "Hello Assistant"
 
 
 def test_response_manager_uses_response_builder() -> None:
     builder = ResponseBuilder()
     manager = ResponseManager(builder=builder)
 
-    response = manager.create("  Hello Alisha  ")
+    response = manager.create("  Hello Assistant  ")
 
-    assert response.text == "Hello Alisha"
+    assert response.text == "Hello Assistant"
 
 
 def test_response_manager_handles_empty_response() -> None:

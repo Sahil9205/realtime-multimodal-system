@@ -39,7 +39,7 @@ async def test_conversation_engine_processes_user_utterance() -> None:
     engine = ConversationEngine()
 
     utterance = UserUtterance(
-        text="Hello Alisha",
+        text="Hello Assistant",
         confidence=0.95,
     )
 
@@ -50,4 +50,4 @@ async def test_conversation_engine_processes_user_utterance() -> None:
     assert response.text.strip()
 
     print(f"\nUSER: {utterance.text}")
-    print(f"ALISHA: {response.text}")
+    print(f"ASSISTANT: {response.text}")

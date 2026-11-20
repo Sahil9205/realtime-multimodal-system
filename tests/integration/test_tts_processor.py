@@ -42,7 +42,7 @@ async def test_tts_processor_generates_audio() -> None:
     processor.push_frame = capture
 
     response_frame = ConversationResponseFrame(
-        text="Hello, I am Alisha.",
+        text="Hello, I am the assistant.",
     )
 
     await processor.process_frame(

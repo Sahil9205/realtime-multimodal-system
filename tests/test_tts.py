@@ -22,7 +22,7 @@ async def test_deepgram_tts_synthesizes_speech(
 
     class FakeAudio:
         def generate(self, **kwargs):
-            assert kwargs["text"] == "Hello Alisha"
+            assert kwargs["text"] == "Hello Assistant"
             return FakeResponse()
 
     class FakeV1:
@@ -47,7 +47,7 @@ async def test_deepgram_tts_synthesizes_speech(
     provider = DeepgramTTS()
 
     request = TTSRequest(
-        text="Hello Alisha",
+        text="Hello Assistant",
     )
 
     response = await provider.synthesize(request)
@@ -69,7 +69,7 @@ async def test_tts_service_synthesizes_speech() -> None:
     service = TTSService(provider=FakeProvider())
 
     request = TTSRequest(
-        text="Hello Alisha",
+        text="Hello Assistant",
     )
 
     response = await service.synthesize(request)

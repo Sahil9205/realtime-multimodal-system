@@ -10,7 +10,7 @@ def test_greeting_handler_returns_response() -> None:
     handler = GreetingHandler()
 
     conversation_input = ConversationInput(
-        text="Hello Alisha",
+        text="Hello Assistant",
         confidence=0.95,
     )
 

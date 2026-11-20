@@ -16,7 +16,7 @@ async def test_huggingface_llm_generates_response() -> None:
         messages=[
             LLMMessage(
                 role="user",
-                content="Hello Alisha",
+                content="Hello Assistant",
             )
         ]
     )

@@ -7,11 +7,21 @@ from __future__ import annotations
 import pytest
 
 from app.ai.asr.schemas import TranscriptionResult
+from app.ai.llm.schemas import LLMResponse
 from app.conversation.engine import ConversationEngine
 from app.voice.pipeline import VoicePipeline
 
 
 pytestmark = pytest.mark.anyio
+
+
+class EchoLLMService:
+    async def generate(self, user_text: str) -> LLMResponse:
+        return LLMResponse(
+            content=user_text,
+            model="fake-model",
+            finish_reason="stop",
+        )
 
 
 class FakeASR:
@@ -54,9 +64,9 @@ async def test_voice_to_conversation_greeting() -> None:
     voice pipeline and reaches the conversation handler.
     """
 
-    asr = FakeASR("Hello Alisha")
+    asr = FakeASR("Hello Assistant")
 
-    conversation_engine = ConversationEngine()
+    conversation_engine = ConversationEngine(llm_service=EchoLLMService())
 
     pipeline = VoicePipeline(
         asr=asr,
@@ -82,7 +92,7 @@ async def test_voice_to_conversation_information_request() -> None:
 
     asr = FakeASR("What can you do?")
 
-    conversation_engine = ConversationEngine()
+    conversation_engine = ConversationEngine(llm_service=EchoLLMService())
 
     pipeline = VoicePipeline(
         asr=asr,
@@ -108,7 +118,7 @@ async def test_voice_pipeline_stops_asr_after_conversation() -> None:
 
     asr = FakeASR("Hello")
 
-    conversation_engine = ConversationEngine()
+    conversation_engine = ConversationEngine(llm_service=EchoLLMService())
 
     pipeline = VoicePipeline(
         asr=asr,

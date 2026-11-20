@@ -28,7 +28,7 @@ async def test_conversation_engine_processes_utterance() -> None:
     )
 
     utterance = UserUtterance(
-        text="Hello Alisha",
+        text="Hello Assistant",
         confidence=0.95,
     )
 
@@ -45,7 +45,7 @@ async def test_conversation_engine_uses_response_manager() -> None:
     )
 
     utterance = UserUtterance(
-        text="Hello Alisha",
+        text="Hello Assistant",
         confidence=0.95,
     )
 

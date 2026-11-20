@@ -22,7 +22,7 @@ def test_greeting_routes_to_greeting_handler() -> None:
     router = create_router()
 
     conversation_input = ConversationInput(
-        text="Hello Alisha",
+        text="Hello Assistant",
         confidence=0.95,
     )
 

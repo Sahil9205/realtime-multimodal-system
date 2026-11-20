@@ -12,7 +12,7 @@ async def main() -> None:
 
     response = await tts.synthesize(
         TTSRequest(
-            text="Hello, I am Alisha. Your voice system is working and i love you."
+            text="Hello, I am the assistant. Your voice system is working."
         )
     )
     print("TTS generated:", len(response.audio), "bytes")

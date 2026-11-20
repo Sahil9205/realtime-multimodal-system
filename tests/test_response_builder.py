@@ -8,18 +8,18 @@ from app.conversation.response.builder import ResponseBuilder
 def test_response_builder_creates_response() -> None:
     builder = ResponseBuilder()
 
-    response = builder.build("Hello Alisha")
+    response = builder.build("Hello Assistant")
 
     assert response is not None
-    assert response.text == "Hello Alisha"
+    assert response.text == "Hello Assistant"
 
 
 def test_response_builder_strips_whitespace() -> None:
     builder = ResponseBuilder()
 
-    response = builder.build("  Hello Alisha  ")
+    response = builder.build("  Hello Assistant  ")
 
-    assert response.text == "Hello Alisha"
+    assert response.text == "Hello Assistant"
 
 
 def test_response_builder_handles_empty_response() -> None:

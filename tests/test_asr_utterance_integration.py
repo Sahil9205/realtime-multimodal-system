@@ -34,7 +34,7 @@ def test_streaming_transcription_produces_user_utterance() -> None:
 
     result = manager.process(
         TranscriptionResult(
-            transcript="Hello Alisha",
+            transcript="Hello Assistant",
             is_final=False,
             speech_final=False,
             confidence=0.90,
@@ -49,7 +49,7 @@ def test_streaming_transcription_produces_user_utterance() -> None:
 
     utterance = manager.process(
         TranscriptionResult(
-            transcript="Hello Alisha",
+            transcript="Hello Assistant",
             is_final=True,
             speech_final=True,
             confidence=0.95,
@@ -57,7 +57,7 @@ def test_streaming_transcription_produces_user_utterance() -> None:
     )
 
     assert utterance is not None
-    assert utterance.text == "Hello Alisha"
+    assert utterance.text == "Hello Assistant"
     assert utterance.confidence == 0.95
 
 
@@ -71,7 +71,7 @@ def test_multiple_speech_segments_produce_multiple_utterances() -> None:
 
     first = manager.process(
         TranscriptionResult(
-            transcript="Hello Alisha",
+            transcript="Hello Assistant",
             is_final=True,
             speech_final=True,
             confidence=0.95,
@@ -90,7 +90,7 @@ def test_multiple_speech_segments_produce_multiple_utterances() -> None:
     assert first is not None
     assert second is not None
 
-    assert first.text == "Hello Alisha"
+    assert first.text == "Hello Assistant"
     assert second.text == "What can you do?"
 
     assert first.confidence == 0.95

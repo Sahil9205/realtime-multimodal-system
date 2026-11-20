@@ -34,7 +34,7 @@ async def test_huggingface_llm_generates_response() -> None:
             messages=[
                 LLMMessage(
                     role="user",
-                    content="Hello Alisha. Introduce yourself in one sentence.",
+                    content="Hello Assistant. Introduce yourself in one sentence.",
                 )
             ],
             temperature=0.7,

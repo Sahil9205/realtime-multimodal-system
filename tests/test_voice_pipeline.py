@@ -23,7 +23,7 @@ class FakeASR:
 
         self._results = [
             TranscriptionResult(
-                transcript="Hello Alisha",
+                transcript="Hello Assistant",
                 is_final=True,
                 speech_final=True,
                 confidence=0.95,
@@ -81,7 +81,7 @@ async def test_pipeline_converts_transcription_to_conversation_output() -> None:
     output = await pipeline.process_next()
 
     assert output is not None
-    assert output.text == "Fake response: Hello Alisha"
+    assert output.text == "Fake response: Hello Assistant"
 
 
 async def test_pipeline_passes_utterance_to_conversation_engine() -> None:
@@ -101,7 +101,7 @@ async def test_pipeline_passes_utterance_to_conversation_engine() -> None:
 
     utterance = conversation_engine.received_utterances[0]
 
-    assert utterance.text == "Hello Alisha"
+    assert utterance.text == "Hello Assistant"
     assert utterance.confidence == 0.95
 
 

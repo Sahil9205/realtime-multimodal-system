@@ -112,7 +112,7 @@ async def test_realtime_asr_to_conversation() -> None:
         print(f"Speak for {RECORD_SECONDS} seconds.")
         print()
         print("Try saying:")
-        print("  Hello Alisha.")
+        print("  Hello Assistant.")
         print("  How are you?")
         print("=" * 60)
 
@@ -227,7 +227,7 @@ async def test_realtime_asr_to_conversation() -> None:
 
         for response in responses:
             print(
-                f"ALISHA: {response.text!r}"
+                f"ASSISTANT: {response.text!r}"
             )
 
         # ----------------------------------------------------------

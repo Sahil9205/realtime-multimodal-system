@@ -20,5 +20,6 @@ def test_information_handler_returns_response() -> None:
 
     assert response.text == (
         "I can help you find information about that. "
-        "The information system is not connected yet."
+        "The information system is not connected yet. "
+        "You asked: What is RAG?"
     )

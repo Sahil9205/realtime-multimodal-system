@@ -26,7 +26,7 @@ def test_final_segment_without_speech_end_does_not_emit_utterance() -> None:
 
     result = manager.process(
         TranscriptionResult(
-            transcript="Hello Alisha",
+            transcript="Hello Assistant",
             is_final=True,
             speech_final=False,
             confidence=0.90,
@@ -36,12 +36,54 @@ def test_final_segment_without_speech_end_does_not_emit_utterance() -> None:
     assert result is None
 
 
+def test_explicit_stop_flushes_final_segment() -> None:
+    manager = UtteranceManager()
+
+    result = manager.process(
+        TranscriptionResult(
+            transcript="This is my complete request",
+            is_final=True,
+            speech_final=False,
+            confidence=0.96,
+        ),
+        force_finalize=True,
+    )
+
+    assert result is not None
+    assert result.text == "This is my complete request"
+
+
+def test_final_segments_are_combined_until_speech_ends() -> None:
+    manager = UtteranceManager()
+
+    manager.process(
+        TranscriptionResult(
+            transcript="Can you tell me about",
+            is_final=True,
+            speech_final=False,
+            confidence=0.9,
+        )
+    )
+
+    utterance = manager.process(
+        TranscriptionResult(
+            transcript="famous Indian restaurants",
+            is_final=True,
+            speech_final=True,
+            confidence=0.95,
+        )
+    )
+
+    assert utterance is not None
+    assert utterance.text == "Can you tell me about famous Indian restaurants"
+
+
 def test_speech_final_emits_user_utterance() -> None:
     manager = UtteranceManager()
 
     manager.process(
         TranscriptionResult(
-            transcript="Hello Alisha",
+            transcript="Hello Assistant",
             is_final=False,
             speech_final=False,
             confidence=0.90,
@@ -50,7 +92,7 @@ def test_speech_final_emits_user_utterance() -> None:
 
     utterance = manager.process(
         TranscriptionResult(
-            transcript="Hello Alisha, how are you?",
+            transcript="Hello Assistant, how are you?",
             is_final=True,
             speech_final=True,
             confidence=0.95,
@@ -58,7 +100,7 @@ def test_speech_final_emits_user_utterance() -> None:
     )
 
     assert utterance is not None
-    assert utterance.text == "Hello Alisha, how are you?"
+    assert utterance.text == "Hello Assistant, how are you?"
     assert utterance.confidence == 0.95
 
 
@@ -67,7 +109,7 @@ def test_new_utterance_starts_after_reset() -> None:
 
     first = manager.process(
         TranscriptionResult(
-            transcript="Hello Alisha",
+            transcript="Hello Assistant",
             is_final=True,
             speech_final=True,
             confidence=0.95,
@@ -75,7 +117,7 @@ def test_new_utterance_starts_after_reset() -> None:
     )
 
     assert first is not None
-    assert first.text == "Hello Alisha"
+    assert first.text == "Hello Assistant"
 
     second = manager.process(
         TranscriptionResult(
@@ -103,7 +145,7 @@ def test_interim_results_replace_previous_hypothesis() -> None:
 
     manager.process(
         TranscriptionResult(
-            transcript="Hello Alisha",
+            transcript="Hello Assistant",
             is_final=False,
             speech_final=False,
             confidence=0.90,
@@ -112,7 +154,7 @@ def test_interim_results_replace_previous_hypothesis() -> None:
 
     utterance = manager.process(
         TranscriptionResult(
-            transcript="Hello Alisha, how are you?",
+            transcript="Hello Assistant, how are you?",
             is_final=True,
             speech_final=True,
             confidence=0.95,
@@ -120,5 +162,5 @@ def test_interim_results_replace_previous_hypothesis() -> None:
     )
 
     assert utterance is not None
-    assert utterance.text == "Hello Alisha, how are you?"
+    assert utterance.text == "Hello Assistant, how are you?"
     assert utterance.confidence == 0.95

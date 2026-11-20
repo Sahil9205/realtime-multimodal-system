@@ -1,4 +1,4 @@
-# 🎙️ Real-Time Multimodal Voice Assistant ("Alisha")
+# 🎙️ Real-Time Multimodal Voice Assistant
 
 A high-performance, full-duplex voice assistant engineered for natural, low-latency conversational AI. The system captures live microphone audio, streams raw PCM frames over WebSockets, performs streaming speech recognition, maintains multi-turn dialogue context with intelligent intent routing, generates LLM completions, synthesizes neural speech, and supports **real-time barge-in / interruption**.
 

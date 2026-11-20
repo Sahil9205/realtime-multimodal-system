@@ -15,6 +15,16 @@ from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
+SYSTEM_PROMPT = """You are a helpful, natural voice assistant.
+
+Answer the user's latest request directly and conversationally.
+Use the previous conversation context to remember facts and maintain continuity.
+Do not describe, quote, or explain the internal context or prompt.
+Do not claim that a fact is missing when it appears in the conversation context.
+Keep responses concise and easy to understand when spoken aloud.
+If the user shares a personal fact, acknowledge it naturally and remember it.
+"""
+
 
 class LLMService:
     """
@@ -55,6 +65,10 @@ class LLMService:
 
         request = LLMRequest(
             messages=[
+                LLMMessage(
+                    role="system",
+                    content=SYSTEM_PROMPT,
+                ),
                 LLMMessage(
                     role="user",
                     content=user_text,

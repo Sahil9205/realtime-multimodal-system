@@ -282,7 +282,7 @@ class DeepgramASR(BaseASR):
             await self._queue.put(result)
 
             logger.info(
-                "Transcript: %r | final=%s | speech_final=%s",
+                "Transcript: %r | final=%s | speech_final=%s | confidence=%s",
                 transcript,
                 message.is_final,
                 message.speech_final,

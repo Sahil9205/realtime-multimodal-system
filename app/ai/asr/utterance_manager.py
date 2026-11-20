@@ -22,11 +22,13 @@ class UtteranceManager:
 
     def __init__(self) -> None:
         self._current_text = ""
+        self._finalized_text = ""
         self._confidence: float | None = None
 
     def process(
         self,
         result: TranscriptionResult,
+        force_finalize: bool = False,
     ) -> UserUtterance | None:
         """
         Process one transcription result.
@@ -48,10 +50,18 @@ class UtteranceManager:
         if not transcript:
             return None
 
-        # Deepgram's streaming transcript represents the current
-        # hypothesis, rather than a new piece of text to append.
+        # Interim results replace the current hypothesis. Final segments can
+        # arrive several times before speech_final, so preserve each segment
+        # and combine them when the user ends the turn.
         self._current_text = transcript
         self._confidence = result.confidence
+
+        if result.is_final:
+            self._finalized_text = " ".join(
+                part
+                for part in (self._finalized_text, transcript)
+                if part
+            )
 
         logger.debug(
             "Updated utterance state: text=%r confidence=%s",
@@ -62,11 +72,11 @@ class UtteranceManager:
         # ``is_final`` only finalizes a speech segment. Wait for Deepgram's
         # endpoint detector to mark the complete speech turn; otherwise the
         # assistant responds to partial phrases.
-        if not result.speech_final:
+        if not result.speech_final and not force_finalize:
             return None
 
         utterance = UserUtterance(
-            text=self._current_text,
+            text=self._finalized_text or self._current_text,
             confidence=self._confidence,
         )
 
@@ -85,4 +95,5 @@ class UtteranceManager:
         """
 
         self._current_text = ""
+        self._finalized_text = ""
         self._confidence = None

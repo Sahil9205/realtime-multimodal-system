@@ -28,6 +28,12 @@ class BaseASR(ABC):
         """
         raise NotImplementedError
 
+    async def finalize(self) -> None:
+        """
+        Mark the current audio segment as complete when supported.
+        """
+        return None
+
     @abstractmethod
     async def send_audio(
         self,

@@ -34,7 +34,10 @@ class Settings(BaseSettings):
     # LLM
     # ------------------------------------------------------------------
     LLM_PROVIDER: str = os.getenv("LLM_PROVIDER", "huggingface")
-    LLM_MODEL_NAME: str = os.getenv("LLM_MODEL", "")
+    LLM_MODEL_NAME: str = Field(
+        default="",
+        validation_alias="LLM_MODEL",
+    )
     HF_TOKEN: str = os.getenv("HF_TOKEN", "")
     TEMPERATURE: float = 1
     MAX_TOKENS: int = 512

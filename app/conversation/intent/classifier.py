@@ -61,9 +61,9 @@ class IntentClassifier:
             "hello",
             "hi",
             "hey",
-            "hey alisha",
-            "hello alisha",
-            "hi alisha",
+            "hey assistant",
+            "hello assistant",
+            "hi assistant",
         }
 
         return text in greetings

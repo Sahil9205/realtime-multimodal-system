@@ -152,6 +152,25 @@ export function useVoiceSession(): VoiceSession {
     await connect()
     const socket = socketRef.current
     if (!socket) return
+    if (socket.readyState !== WebSocket.OPEN) {
+      await new Promise<void>((resolve, reject) => {
+        const handleOpen = () => {
+          cleanup()
+          resolve()
+        }
+        const handleError = () => {
+          cleanup()
+          reject(new Error('WebSocket connection failed.'))
+        }
+        const cleanup = () => {
+          socket.removeEventListener('open', handleOpen)
+          socket.removeEventListener('error', handleError)
+        }
+
+        socket.addEventListener('open', handleOpen, { once: true })
+        socket.addEventListener('error', handleError, { once: true })
+      })
+    }
     stopPlayback()
     if (socket.readyState === WebSocket.OPEN) socket.send(JSON.stringify({ type: 'interrupt' }))
     const stream = await navigator.mediaDevices.getUserMedia({

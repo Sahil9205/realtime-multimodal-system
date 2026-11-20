@@ -243,6 +243,8 @@ class RealtimeWebSocketManager:
 
             if command_type == "stop":
                 logger.info("VOICE SESSION %s | microphone stopped", session_id)
+                if asr_processor is not None:
+                    await asr_processor.finalize()
                 continue
 
             # Keep the existing text smoke-test behavior until the frontend

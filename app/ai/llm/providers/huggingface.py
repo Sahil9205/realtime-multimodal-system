@@ -40,7 +40,7 @@ class HuggingFaceLLM(BaseLLM):
         provider access settings.
         """
 
-        model_name = settings.LLM_MODEL_NAME or "Qwen/Qwen2.5-7B-Instruct"
+        model_name = settings.LLM_MODEL_NAME or "meta-llama/Llama-3.1-8B-Instruct"
 
         logger.info(
             "Generating response with Hugging Face model: %s",

@@ -49,6 +49,7 @@ class ASRProcessor(FrameProcessor):
         )
 
         self._receive_task: asyncio.Task | None = None
+        self._finalize_requested = False
 
     async def start(self) -> None:
         """
@@ -86,6 +87,11 @@ class ASRProcessor(FrameProcessor):
 
         logger.info("ASR processor stopped.")
 
+    async def finalize(self) -> None:
+        """Flush the current provider-side speech segment without disconnecting."""
+        self._finalize_requested = True
+        await self._asr.finalize()
+
     async def process_frame(
         self,
         frame,
@@ -118,8 +124,12 @@ class ASRProcessor(FrameProcessor):
                 result = await self._asr.receive_transcript()
 
                 utterance = self._utterance_manager.process(
-                    result
+                    result,
+                    force_finalize=self._finalize_requested and result.is_final,
                 )
+
+                if utterance is not None:
+                    self._finalize_requested = False
 
                 if utterance is None:
                     continue
